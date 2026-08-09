@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор себестоимости 3D-печати</title>
+<style>
+:root{
+  --bg:#0f1620; --card:#182333; --line:#2a3a50;
+  --txt:#e8eef7; --dim:#8fa3bd; --acc:#ff8a3d; --ok:#4ade80;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--txt);padding:16px;line-height:1.5;
+}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-size:24px;margin-bottom:6px}
+.sub{color:var(--dim);font-size:14px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:18px;margin-bottom:14px}
+.card h2{font-size:15px;color:var(--acc);margin-bottom:14px;
+  text-transform:uppercase;letter-spacing:.5px}
+label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px}
+input{width:100%;background:#0d1420;border:1px solid var(--line);
+  border-radius:8px;padding:10px;color:var(--txt);font-size:15px}
+input:focus{outline:none;border-color:var(--acc)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+details{margin-bottom:14px}
+summary{cursor:pointer;color:var(--acc);font-size:14px;padding:10px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px}
+.big{font-size:40px;font-weight:700;color:var(--acc);
+  text-align:center;margin:10px 0}
+.big small{display:block;font-size:12px;color:var(--dim);
+  font-weight:400;letter-spacing:1px}
+.bar{margin:8px 0}
+.bar .t{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
+.bar .track{height:8px;background:#0d1420;border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--acc);border-radius:4px;transition:.3s}
+.hint{background:rgba(255,138,61,.1);border-left:3px solid var(--acc);
+  padding:12px;border-radius:0 8px 8px 0;font-size:14px;margin:14px 0}
+.price{display:flex;justify-content:space-between;padding:11px 0;
+  border-bottom:1px solid var(--line)}
+.price:last-child{border:none}
+.price b{font-size:19px}
+.price .p{font-size:12px;color:var(--ok)}
+.warn{background:rgba(239,68,68,.15);border-left:3px solid #ef4444;
+  padding:12px;border-radius:0 8px 8px 0;font-size:14px;margin:10px 0}
+button{width:100%;background:var(--acc);color:#0f1620;border:none;
+  border-radius:10px;padding:13px;font-size:15px;font-weight:600;
+  cursor:pointer;margin-top:10px}
+button:hover{opacity:.9}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.foot{text-align:center;color:var(--dim);font-size:12px;margin-top:24px}
+.foot a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Калькулятор себестоимости 3D-печати</h1>
+<p class="sub">Честный расчёт с учётом брака, амортизации и — главное — твоего времени</p>
+
+<div class="grid">
+
+  <!-- ЛЕВАЯ КОЛОНКА -->
+  <div>
+    <div class="card">
+      <h2>Изделие</h2>
+      <label>Название</label>
+      <input id="name" value="Крючок настенный">
+      <div class="row">
+        <div><label>Вес детали, г</label><input id="w" type="number" value="18"></div>
+        <div><label>Отход на цвет, г</label><input id="purge" type="number" value="0"></div>
+      </div>
+      <div class="row">
+        <div><label>Печать, мин</label><input id="pm" type="number" value="45"></div>
+        <div><label>Руками, мин</label><input id="hm" type="number" value="7"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Пластик</h2>
+      <div class="row">
+        <div><label>Цена катушки, ₽</label><input id="sp" type="number" value="1200"></div>
+        <div><label>Вес катушки, г</label><input id="sw" type="number" value="1000"></div>
+      </div>
+    </div>
+
+    <details>
+      <summary>⚙️ Настройки мастерской (один раз)</summary>
+      <div class="card" style="margin-top:10px">
+        <div class="row">
+          <div><label>Цена принтера, ₽</label><input id="pp" type="number" value="80000"></div>
+          <div><label>Ресурс, часов</label><input id="pl" type="number" value="6000"></div>
+        </div>
+        <div class="row">
+          <div><label>Мощность, Вт</label><input id="pw" type="number" value="250"></div>
+          <div><label>Свет, ₽/кВт·ч</label><input id="kwh" type="number" step="0.1" value="5.5"></div>
+        </div>
+        <div class="row">
+          <div><label>Твоя ставка, ₽/час</label><input id="hr" type="number" value="500"></div>
+          <div><label>Упаковка, ₽</label><input id="pk" type="number" value="30"></div>
+        </div>
+        <div class="row">
+          <div><label>Брак, %</label><input id="df" type="number" value="15"></div>
+          <div><label>Расходники, %</label><input id="cn" type="number" value="8"></div>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>🛒 Точный расчёт для WB / Ozon</summary>
+      <div class="card" style="margin-top:10px">
+        <div class="row">
+          <div><label>Комиссия, %</label><input id="mc" type="number" value="20"></div>
+          <div><label>Логистика, ₽</label><input id="ml" type="number" value="50"></div>
+        </div>
+        <div class="row">
+          <div><label>Реклама, %</label><input id="ma" type="number" value="10"></div>
+          <div><label>Хочу маржу, %</label><input id="mm" type="number" value="30"></div>
+        </div>
+        <div id="mpbox"></div>
+      </div>
+    </details>
+  </div>
+
+  <!-- ПРАВАЯ КОЛОНКА -->
+  <div>
+    <div class="card">
+      <div class="big"><small>СЕБЕСТОИМОСТЬ</small><span id="cost">—</span></div>
+      <div id="bars"></div>
+      <div class="hint" id="hint"></div>
+    </div>
+
+    <div class="card">
+      <h2>Сколько продавать</h2>
+      <div class="price"><span>В розницу</span>
+        <span><b id="r1">—</b> <span class="p" id="p1"></span></span></div>
+      <div class="price"><span>На маркетплейсе</span>
+        <span><b id="r2">—</b> <span class="p" id="p2"></span></span></div>
+      <div class="price"><span>Оптом от 10 шт</span>
+        <span><b id="r3">—</b> <span class="p" id="p3"></span></span></div>
+      <button class="ghost" onclick="copyCalc()">📋 Скопировать расчёт</button>
+    </div>
+
+    <div class="card">
+      <h2>Забрать таблицу-калькулятор</h2>
+      <p style="font-size:13px;color:var(--dim)">
+        Пришлю Google-таблицу, где всё считается автоматически. Бесплатно.</p>
+      <input id="mail" type="email" placeholder="твоя@почта.ру">
+      <button onclick="send()">Хочу таблицу 📊</button>
+      <p id="msg" style="font-size:13px;margin-top:8px"></p>
+    </div>
+  </div>
+</div>
+
+<p class="foot">Расчёт носит справочный характер.<br>
+Сделано в <a href="#">Мастерской и калькуляторе</a></p>
+
+</div>
+
+<script>
+// ⬇️ СЮДА вставь свой webhook из n8n
+const WEBHOOK = "";
+
+const F = ['name','w','purge','pm','hm','sp','sw','pp','pl','pw','kwh',
+           'hr','pk','df','cn','mc','ml','ma','mm'];
+const SAVE = ['sp','sw','pp','pl','pw','kwh','hr','pk','df','cn','mc','ml','ma','mm'];
+
+const g = id => parseFloat(document.getElementById(id).value) || 0;
+const money = n => Math.round(n).toLocaleString('ru-RU') + ' ₽';
+
+function calc(){
+  const pricePerGram = g('sw') > 0 ? g('sp') / g('sw') : 0;
+  const hours = g('pm') / 60;
+
+  const fil  = (g('w') + g('purge')) * pricePerGram;
+  const el   = (g('pw')/1000) * hours * g('kwh');
+  const am   = g('pl') > 0 ? (g('pp')/g('pl')) * hours : 0;
+  const cons = (fil + el) * g('cn')/100;
+  const def  = (fil + el + am) * g('df')/100;
+  const lab  = (g('hm')/60) * g('hr');
+  const pack = g('pk');
+
+  const cost = fil + el + am + cons + def + lab + pack;
+
+  const items = [
+    ['🖐','Твои руки', lab],
+    ['📦','Упаковка', pack],
+    ['🧵','Пластик', fil],
+    ['♻️','Брак', def],
+    ['🔧','Принтер', am],
+    ['🧰','Расходники', cons],
+    ['⚡','Электричество', el]
+  ].filter(i => i[2] > 0.4).sort((a,b) => b[2]-a[2]);
+
+  document.getElementById('cost').textContent = money(cost);
+  document.getElementById('bars').innerHTML = items.map(i => {
+    const pct = cost > 0 ? (i[2]/cost*100) : 0;
+    return `<div class="bar"><div class="t">
+      <span>${i[0]} ${i[1]}</span>
+      <span>${money(i[2])} · ${pct.toFixed(0)}%</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+
+  // подсказка
+  const top = items[0];
+  let hint = '';
+  if(top && top[1] === 'Твои руки')
+    hint = `💡 Основное — <b>твои руки (${(top[2]/cost*100).toFixed(0)}%)</b>, а не пластик. Не продавай своё время дёшево.`;
+  else if(top && top[1] === 'Пластик')
+    hint = `💡 Пластик — главная статья. Проверь заполнение и толщину стенок, там прячутся деньги.`;
+  else if(top && top[1] === 'Упаковка')
+    hint = `💡 Упаковка съедает больше всего. Для мелочи это нормально — но подумай про мелкий опт.`;
+  else hint = `💡 Затраты распределены ровно. Смотри на итог и наценку.`;
+  document.getElementById('hint').innerHTML = hint;
+
+  // цены
+  const r = [cost*2.5, cost*3.5, cost*1.8];
+  r.forEach((v,i) => {
+    document.getElementById('r'+(i+1)).textContent = money(v);
+    document.getElementById('p'+(i+1)).textContent = '+' + money(v-cost);
+  });
+
+  // маркетплейс точно
+  const k = 1 - g('mc')/100 - g('ma')/100 - g('mm')/100;
+  const box = document.getElementById('mpbox');
+  if(k <= 0.05){
+    box.innerHTML = `<div class="warn">⚠️ Комиссия + реклама + желаемая маржа
+      съедают почти всю цену. Уменьши аппетиты или маржу.</div>`;
+  } else {
+    const p = (cost + g('ml')) / k;
+    box.innerHTML = `<div class="hint">Чтобы получить <b>${g('mm')}% маржи</b>
+      на маркетплейсе, ставь цену <b>${money(p)}</b>.<br>
+      <span style="color:var(--dim);font-size:13px">
+      Себестоимость ${money(cost)} + логистика ${money(g('ml'))},
+      минус комиссия ${g('mc')}% и реклама ${g('ma')}%.</span></div>`;
+  }
+
+  window._c = {cost, r, items, name: document.getElementById('name').value};
+}
+
+function copyCalc(){
+  const c = window._c;
+  let t = `📊 ${c.name}\n\nСЕБЕСТОИМОСТЬ: ${money(c.cost)}\n\n`;
+  c.items.forEach(i => t += `${i[0]} ${i[1]}: ${money(i[2])}\n`);
+  t += `\nРозница: ${money(c.r[0])}\nМаркетплейс: ${money(c.r[1])}\nОпт: ${money(c.r[2])}`;
+  navigator.clipboard.writeText(t).then(()=>alert('Скопировано ✅'));
+}
+
+function send(){
+  const m = document.getElementById('mail').value.trim();
+  const msg = document.getElementById('msg');
+  if(!m.includes('@')){ msg.textContent = '⚠️ Проверь адрес'; return; }
+  if(!WEBHOOK){ msg.textContent = '⚠️ Webhook не настроен'; return; }
+  msg.textContent = 'Отправляю…';
+  fetch(WEBHOOK, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email:m, calc:window._c})
+  }).then(()=>{ msg.innerHTML='✅ Готово! Проверь почту';
+    document.getElementById('mail').value=''; })
+   .catch(()=> msg.textContent='❌ Ошибка, попробуй позже');
+}
+
+// сохранение настроек
+SAVE.forEach(id => {
+  const v = localStorage.getItem('c_'+id);
+  if(v !== null) document.getElementById(id).value = v;
+});
+F.forEach(id => document.getElementById(id).addEventListener('input', () => {
+  if(SAVE.includes(id)) localStorage.setItem('c_'+id, document.getElementById(id).value);
+  calc();
+}));
+calc();
+</script>
+</body>
+</html>
