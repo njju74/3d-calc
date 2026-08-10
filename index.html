@@ -147,15 +147,24 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
     </div>
 
     <div class="card">
-      <h2>Забрать таблицу-калькулятор</h2>
-      <p style="font-size:13px;color:var(--dim)">
-        Пришлю Google-таблицу, где всё считается автоматически. Бесплатно.</p>
-      <input id="mail" type="email" placeholder="твоя@почта.ру">
-      <button onclick="send()">Хочу таблицу 📊</button>
-      <p id="msg" style="font-size:13px;margin-top:8px"></p>
-    </div>
-  </div>
+  <h2>Забрать таблицу-калькулятор</h2>
+  <p style="font-size:13px;color:var(--dim)">
+    Пришлю Google-таблицу, где всё считается автоматически. Бесплатно.</p>
+  <input id="mail" type="email" placeholder="твоя@почта.ру">
+
+  <label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;
+                font-size:12px;color:var(--dim);cursor:pointer">
+    <input type="checkbox" id="agree" style="width:auto;margin-top:3px">
+    <span>Согласен(-на) на обработку e-mail, чтобы получить таблицу
+    и письма о проекте. Отписаться можно в любой момент.
+    <a href="https://agent3d.ru/privacy" target="_blank"
+       style="color:var(--acc)">Политика конфиденциальности</a></span>
+  </label>
+
+  <button onclick="send()">Хочу таблицу 📊</button>
+  <p id="msg" style="font-size:13px;margin-top:8px"></p>
 </div>
+
 
 <p class="foot">Расчёт носит справочный характер.<br>
 Сделано в <a href="#">Мастерской и калькуляторе</a></p>
@@ -253,17 +262,34 @@ function copyCalc(){
 
 function send(){
   const m = document.getElementById('mail').value.trim();
+  const ok = document.getElementById('agree').checked;
   const msg = document.getElementById('msg');
-  if(!m.includes('@')){ msg.textContent = '⚠️ Проверь адрес'; return; }
-  if(!WEBHOOK){ msg.textContent = '⚠️ Webhook не настроен'; return; }
+
+  if(!m.includes('@') || m.length < 5){
+    msg.textContent = '⚠️ Проверь адрес почты'; return; }
+  if(!ok){
+    msg.textContent = '⚠️ Нужно согласие на обработку данных'; return; }
+  if(!WEBHOOK){
+    msg.textContent = '⚠️ Форма пока не подключена'; return; }
+
   msg.textContent = 'Отправляю…';
   fetch(WEBHOOK, {
     method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({email:m, calc:window._c})
-  }).then(()=>{ msg.innerHTML='✅ Готово! Проверь почту';
-    document.getElementById('mail').value=''; })
-   .catch(()=> msg.textContent='❌ Ошибка, попробуй позже');
+    body: JSON.stringify({
+      email: m,
+      consent: true,
+      consent_at: new Date().toISOString(),
+      source: 'calc.agent3d.ru',
+      calc: window._c
+    })
+  }).then(r => {
+    if(!r.ok) throw new Error();
+    msg.innerHTML = '✅ Готово! Проверь почту (и папку «Спам»)';
+    document.getElementById('mail').value = '';
+    document.getElementById('agree').checked = false;
+  }).catch(() => msg.textContent = '❌ Не отправилось, попробуй позже');
 }
+
 
 // сохранение настроек
 SAVE.forEach(id => {
