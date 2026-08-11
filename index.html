@@ -290,10 +290,11 @@ function calc(){
   const c = compute(qty0);
 
   // Большая цифра
-  document.getElementById('cost').textContent = money(c.unit);
+ document.getElementById('cost').textContent = money(c.unit); 
   document.getElementById('unitline').textContent =
-    qty0 > 1 ? `за штуку · вся партия ${money(c.total)}` : 'за штуку';
+   qty0 > 1 ? 'за штуку' · вся партия ${money(c.total)}` : 'за штуку';
 
+    
   // Полоски
   const items = [
     ['🧵','Пластик', c.fil],
