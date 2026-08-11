@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://calc.agent3d.ru/sitemap.xml
