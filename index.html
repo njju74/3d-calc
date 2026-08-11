@@ -26,6 +26,16 @@ h1{font-size:24px;margin-bottom:6px}
 label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px}
 input{width:100%;background:#0d1420;border:1px solid var(--line);
   border-radius:8px;padding:10px;color:var(--txt);font-size:15px}
+  select{width:100%;background:#0d1420;border:1px solid var(--line);
+  border-radius:8px;padding:10px;color:var(--txt);font-size:15px}
+select:focus{outline:none;border-color:var(--acc)}
+.tip{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.4}
+.unit{font-size:13px;color:var(--dim);text-align:center;margin-top:-6px}
+.batch{margin-top:14px;font-size:13px}
+.batch table{width:100%;border-collapse:collapse}
+.batch td{padding:7px 4px;border-bottom:1px solid var(--line)}
+.batch td:last-child{text-align:right;font-weight:600}
+.batch tr.now td{color:var(--acc)}
 input:focus{outline:none;border-color:var(--acc)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 details{margin-bottom:14px}
@@ -67,6 +77,7 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
 
   <!-- ЛЕВАЯ КОЛОНКА -->
   <div>
+ <!-- заменяем этот блок на два других
     <div class="card">
       <h2>Изделие</h2>
       <label>Название</label>
@@ -83,6 +94,42 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
         <div><label>Печать, мин</label><input id="pm" type="number" value="45"></div>
         <div><label>Руками, мин</label><input id="hm" type="number" value="7"></div>
       </div>
+-->
+<div class="card">
+  <h2>Что напечатано за один запуск</h2>
+  <label>Название</label>
+  <input id="name" value="Крепление для москитной сетки">
+  <div class="row">
+    <div><label>Вес филамента, г</label><input id="w" type="number" value="12"></div>
+    <div><label>Время печати, мин</label><input id="pm" type="number" value="55"></div>
+  </div>
+  <div class="row">
+    <div><label>Штук получилось</label><input id="qty" type="number" value="30"></div>
+    <div><label>Отход на смену цвета, г</label><input id="purge" type="number" value="0"></div>
+  </div>
+  <p class="tip">💡 Бери цифры прямо из слайсера — как есть, на весь стол.
+  Делить на штуки не надо, калькулятор сделает сам.</p>
+</div>
+
+<div class="card">
+  <h2>Ручная работа</h2>
+  <div class="row">
+    <div><label>Постобработка, мин</label><input id="hm" type="number" value="1"></div>
+    <div><label>Это время</label>
+      <select id="hmode">
+        <option value="per">на одну штуку</option>
+        <option value="all">на всю партию</option>
+      </select>
+    </div>
+  </div>
+  <label>Время на заказ, мин</label>
+  <input id="om" type="number" value="20">
+  <p class="tip">Переписка с клиентом, подготовка файла, упаковка, отправка.
+  Считается один раз, сколько бы штук ни было.</p>
+</div>
+
+
+    
     </div>
     <div class="card">
       <h2>Пластик</h2>
@@ -105,7 +152,16 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
         </div>
         <div class="row">
           <div><label>Твоя ставка, ₽/час</label><input id="hr" type="number" value="500"></div>
-          <div><label>Упаковка, ₽</label><input id="pk" type="number" value="30"></div>
+         <!-- <div><label>Упаковка, ₽</label><input id="pk" type="number" value="30"></div> -->
+          </div>
+<div class="row">
+  <div><label>Упаковка, ₽</label><input id="pk" type="number" value="10"></div>
+  <div><label>Считать</label>
+    <select id="pkmode">
+      <option value="all">на весь заказ</option>
+      <option value="per">на каждую штуку</option>
+    </select>
+  </div>  
         </div>
         <div class="row">
           <div><label>Брак, %</label><input id="df" type="number" value="15"></div>
@@ -133,7 +189,7 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
   <!-- ПРАВАЯ КОЛОНКА -->
   <div>
     <div class="card">
-      <div class="big"><small>СЕБЕСТОИМОСТЬ</small><span id="cost">—</span></div>
+      <div class="big"><p class="unit" id="unitline"></p><small>СЕБЕСТОИМОСТЬ</small><span id="cost">—</span></div>
       <div id="bars"></div>
       <div class="hint" id="hint"></div>
     </div>
@@ -146,6 +202,7 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
         <span><b id="r2">—</b> <span class="p" id="p2"></span></span></div>
       <div class="price"><span>Оптом от 10 шт</span>
         <span><b id="r3">—</b> <span class="p" id="p3"></span></span></div>
+      <div class="batch" id="batchbox"></div>
       <button class="ghost" onclick="copyCalc()">📋 Скопировать расчёт</button>
     </div>
 
@@ -201,107 +258,139 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
 // ⬇️ СЮДА вставь свой webhook из n8n
 const WEBHOOK = "";
 
-const F = ['name','w','purge','pm','hm','qty','om','sp','sw',
-           'pp','pl','pw','kwh','hr','pk','df','cn','mc','ml','ma','mm'];
-const SAVE = ['sp','sw','pp','pl','pw','kwh','hr','pk','df','cn',
-              'mc','ml','ma','mm','om'];
+const F = ['name','w','purge','pm','qty','hm','hmode','om','sp','sw',
+           'pp','pl','pw','kwh','hr','pk','pkmode','df','cn','mc','ml','ma','mm'];
+const SAVE = ['sp','sw','pp','pl','pw','kwh','hr','pk','pkmode','df','cn',
+              'om','mc','ml','ma','mm'];
 
 const g = id => parseFloat(document.getElementById(id).value) || 0;
 const money = n => Math.round(n).toLocaleString('ru-RU') + ' ₽';
 
 function calc(){
-  const qty = Math.max(1, g('qty'));
-  const pricePerGram = g('sw') > 0 ? g('sp') / g('sw') : 0;
-  const hoursOne = g('pm') / 60;
+  const qty0 = Math.max(1, g('qty'));
+  const ppg  = g('sw') > 0 ? g('sp')/g('sw') : 0;
+  const hB   = g('pm')/60;              // часов на весь запуск
+  const rate = g('hr')/60;              // ₽ за минуту
+  const hmode  = document.getElementById('hmode').value;
+  const pkmode = document.getElementById('pkmode').value;
 
-  // НА ЕДИНИЦУ
-  const fil1  = (g('w') + g('purge')) * pricePerGram;
-  const el1   = (g('pw')/1000) * hoursOne * g('kwh');
-  const am1   = g('pl') > 0 ? (g('pp')/g('pl')) * hoursOne : 0;
-  const lab1  = (g('hm')/60) * g('hr');
+  // Считаем партию любого размера n
+  function compute(n){
+    const k = n / qty0;                 // во сколько раз больше
+    const fil  = (g('w') + g('purge')) * ppg * k;
+    const el   = (g('pw')/1000) * hB * k * g('kwh');
+    const am   = g('pl') > 0 ? (g('pp')/g('pl')) * hB * k : 0;
+    const cons = (fil + el) * g('cn')/100;
+    const def  = (fil + el + am) * g('df')/100;
+    const post = (hmode === 'per' ? g('hm') * n : g('hm') * k) * rate;
+    const ord  = g('om') * rate;                       // фикс
+    const pack = pkmode === 'per' ? g('pk') * n : g('pk');
+    const total = fil + el + am + cons + def + post + ord + pack;
+    return {total, unit: total/n, fil, el, am, cons, def, post, ord, pack};
+  }
 
-  // НА ПАРТИЮ
-  const fil  = fil1 * qty;
-  const el   = el1  * qty;
-  const am   = am1  * qty;
-  const lab  = lab1 * qty;
-  const cons = (fil + el) * g('cn')/100;
-  const def  = (fil + el + am) * g('df')/100;
-  const pack = g('pk');                        // один раз
-  const ord  = (g('om')/60) * g('hr');         // один раз
+  const c = compute(qty0);
 
-  const total = fil + el + am + cons + def + lab + pack + ord;
-  const cost  = total / qty;                   // на единицу
+  // Большая цифра
+  document.getElementById('cost').textContent = money(c.unit);
+  document.getElementById('unitline').textContent =
+    qty0 > 1 ? `за штуку · вся партия ${money(c.total)}` : 'за штуку';
 
+  // Полоски
   const items = [
-    ['🧵','Пластик', fil/qty],
-    ['🖐','Твои руки', (lab+ord)/qty],
-    ['🔧','Принтер', am/qty],
-    ['♻️','Брак', def/qty],
-    ['📦','Упаковка', pack/qty],
-    ['🧰','Расходники', cons/qty],
-    ['⚡','Электричество', el/qty]
+    ['🧵','Пластик', c.fil],
+    ['🖐','Постобработка', c.post],
+    ['📋','Время на заказ', c.ord],
+    ['🔧','Принтер', c.am],
+    ['♻️','Брак', c.def],
+    ['📦','Упаковка', c.pack],
+    ['🧰','Расходники', c.cons],
+    ['⚡','Электричество', c.el]
   ].filter(i => i[2] > 0.4).sort((a,b) => b[2]-a[2]);
 
-  document.getElementById('cost').textContent =
-    money(cost) + (qty > 1 ? ' / шт' : '');
-
   document.getElementById('bars').innerHTML = items.map(i => {
-    const pct = cost > 0 ? (i[2]/cost*100) : 0;
+    const pct = c.total > 0 ? i[2]/c.total*100 : 0;
+    const per = qty0 > 1 ? ` <span style="color:var(--dim)">(${money(i[2]/qty0)}/шт)</span>` : '';
     return `<div class="bar"><div class="t">
       <span>${i[0]} ${i[1]}</span>
-      <span>${money(i[2])} · ${pct.toFixed(0)}%</span></div>
+      <span>${money(i[2])}${per} · ${pct.toFixed(0)}%</span></div>
       <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
   }).join('');
 
-  // подсказка
+  // Подсказка
+  const fixed = c.ord + (pkmode === 'all' ? c.pack : 0);
+  const fixPct = c.total > 0 ? fixed/c.total*100 : 0;
   const top = items[0];
   let hint = '';
-  if(!top) hint = '💡 Заполни данные изделия';
+  if(!top) hint = '💡 Заполни данные';
   else if(top[1] === 'Пластик')
-    hint = `💡 Пластик — <b>${(top[2]/cost*100).toFixed(0)}%</b> затрат.
-            Смотри в сторону заполнения, толщины стенок и оптовой закупки.`;
-  else if(top[1] === 'Твои руки')
-    hint = `💡 Твоё время — <b>${(top[2]/cost*100).toFixed(0)}%</b>.
-            Экономия тут — печать партиями и шаблоны для клиентов.`;
+    hint = `💡 Пластик — <b>${(top[2]/c.total*100).toFixed(0)}%</b>.
+            Смотри заполнение, толщину стенок и оптовую закупку филамента.`;
+  else if(top[1] === 'Постобработка')
+    hint = `💡 Главная статья — <b>ручная доводка</b>.
+            Каждые 15 секунд на детали здесь дороже, чем цена филамента.`;
+  else if(top[1] === 'Время на заказ')
+    hint = `💡 Больше всего съедает <b>обслуживание заказа</b>.
+            Печатай партиями и делай наборы, а не одиночки.`;
   else if(top[1] === 'Принтер')
-    hint = `💡 Главное — амортизация. Значит печать долгая.
+    hint = `💡 Главное — амортизация, печать долгая.
             Проверь скорость и высоту слоя.`;
-  else hint = `💡 Затраты распределены ровно.`;
+  else hint = '💡 Затраты распределены ровно.';
 
-  if(g('df') === 0) hint += `<br><b style="color:#ef4444">
-    ⚠️ Брак стоит 0%. Так не бывает — поставь хотя бы 10%.</b>`;
+  if(fixPct > 30 && qty0 < 20)
+    hint += `<br>⚠️ <b>${fixPct.toFixed(0)}%</b> — постоянные затраты,
+             они не зависят от количества. Партией будет заметно дешевле.`;
+  if(g('df') === 0)
+    hint += `<br><b style="color:#ef4444">⚠️ Брак стоит 0%. Так не бывает.</b>`;
 
   document.getElementById('hint').innerHTML = hint;
 
-  const r = [cost*2.5, cost*3.5, cost*1.8];
+  // Цены
+  const r = [c.unit*2.5, c.unit*3.5, c.unit*1.8];
   r.forEach((v,i) => {
     document.getElementById('r'+(i+1)).textContent = money(v);
-    document.getElementById('p'+(i+1)).textContent = '+' + money(v-cost);
+    document.getElementById('p'+(i+1)).textContent = '+' + money(v - c.unit);
   });
 
+  // Эффект партии
+  const sizes = [...new Set([qty0, qty0*2, qty0*5, qty0*10])];
+  document.getElementById('batchbox').innerHTML =
+    `<h2 style="font-size:15px;color:var(--acc);margin:14px 0 8px;
+      text-transform:uppercase">Эффект партии</h2><table>` +
+    sizes.map(n => {
+      const u = compute(n).unit;
+      const cls = n === qty0 ? ' class="now"' : '';
+      const mark = n === qty0 ? ' ← сейчас' : '';
+      return `<tr${cls}><td>${n} шт${mark}</td><td>${money(u)} / шт</td></tr>`;
+    }).join('') +
+    `</table><p class="tip">Прикидка: считаем, что детали влезут на стол
+     и печатаются так же. На практике время может отличаться.</p>`;
+
+  // Маркетплейс
   const k = 1 - g('mc')/100 - g('ma')/100 - g('mm')/100;
   const box = document.getElementById('mpbox');
   if(k <= 0.05){
     box.innerHTML = `<div class="warn">⚠️ Комиссия, реклама и маржа
-      съедают всю цену. Уменьши аппетиты.</div>`;
+      съедают всю цену.</div>`;
   } else {
-    const p = (cost + g('ml')) / k;
     box.innerHTML = `<div class="hint">Чтобы получить <b>${g('mm')}% маржи</b>,
-      ставь цену <b>${money(p)}</b> за штуку.</div>`;
+      ставь цену <b>${money((c.unit + g('ml'))/k)}</b> за штуку.</div>`;
   }
 
-  window._c = {cost, total, qty, r, items,
+  window._c = {unit: c.unit, total: c.total, qty: qty0, r, items,
                name: document.getElementById('name').value};
 }
 
-
 function copyCalc(){
   const c = window._c;
-  let t = `📊 ${c.name}\n\nСЕБЕСТОИМОСТЬ: ${money(c.cost)}\n\n`;
+  let t = `📊 ${c.name}`;
+  if(c.qty > 1) t += ` (партия ${c.qty} шт)`;
+  t += `\n\nСЕБЕСТОИМОСТЬ: ${money(c.unit)} / шт`;
+  if(c.qty > 1) t += `\nЗа всю партию: ${money(c.total)}`;
+  t += `\n\n`;
   c.items.forEach(i => t += `${i[0]} ${i[1]}: ${money(i[2])}\n`);
-  t += `\nРозница: ${money(c.r[0])}\nМаркетплейс: ${money(c.r[1])}\nОпт: ${money(c.r[2])}`;
-  navigator.clipboard.writeText(t).then(()=>alert('Скопировано ✅'));
+  t += `\nРозница: ${money(c.r[0])} / шт\nМаркетплейс: ${money(c.r[1])} / шт`;
+  navigator.clipboard.writeText(t).then(() => alert('Скопировано ✅'));
 }
 
 function send(){
@@ -341,10 +430,15 @@ SAVE.forEach(id => {
   const v = localStorage.getItem('c_'+id);
   if(v !== null) document.getElementById(id).value = v;
 });
-F.forEach(id => document.getElementById(id).addEventListener('input', () => {
-  if(SAVE.includes(id)) localStorage.setItem('c_'+id, document.getElementById(id).value);
-  calc();
-}));
+F.forEach(id => {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', () => {
+    if(SAVE.includes(id)) localStorage.setItem('c_'+id, el.value);
+    calc();
+  });
+  el.addEventListener('change', calc);
+});
 calc();
 </script>
 </body>
