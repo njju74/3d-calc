@@ -37,7 +37,7 @@
 
   
 :root{
-  --bg:#0f1620; --card:#182333; --line:#2a3a50;
+  --bg:#0f1620; --card:#182333; --line:#2a3a50; --skri:#aab1bdce;
   --txt:#e8eef7; --dim:#8fa3bd; --acc:#ff8a3d; --ok:#4ade80;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -68,7 +68,7 @@ select:focus{outline:none;border-color:var(--acc)}
 .batch td{padding:7px 4px;border-bottom:1px solid var(--line)}
 .batch td:last-child{text-align:right;font-weight:600}
 .batch tr.now td{color:var(--acc)}
-input::placeholder {color: var(--dim);font-style: italic}
+input::placeholder {color: var(--skri);font-style: italic}
 input:focus{outline:none;border-color:var(--acc)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 details{margin-bottom:14px}
