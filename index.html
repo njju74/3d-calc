@@ -592,22 +592,11 @@ calc();
   <!-- /Yandex.Metrika informer -->
   <!-- Metrika конец-------------------------   -->
   
-  <a href="https://info.flagcounter.com/6HXa">
-  <img src="https://s01.flagcounter.com/count/6HXa/bg_000000/txt_FFFFFF/border_CCCCCC/columns_3/maxflags_9/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a> 
+  <a href="https://info.flagcounter.com/6HXa"> <img src="https://s01.flagcounter.com/count/6HXa/bg_000000/txt_FFFFFF/border_CCCCCC/columns_3/maxflags_9/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a> 
   
-
-  // --- Google Analytics 4 ---
-  var ga = document.createElement('script');
-  ga.async = true;
-  ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX';
-  document.head.appendChild(ga);
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { dataLayer.push(arguments); };
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX');
 })();
 </script>
+   -->
 <!-- ===== /Аналитика ===== -->
 
 
@@ -1220,73 +1209,13 @@ calc();
   <a href="https://t.me/masterskaya_calc" target="_blank">Telegram</a>
 </p>
 
-
-<!-- ===== Аналитика: только на боевом сайте ===== -->
-<script>
-(function () {
-  // 1. Определяем, тестовая ли это среда
-  var isTest =
-        location.pathname.indexOf('/beta') === 0        // папка /beta/
-     || location.hostname.indexOf('pr-') === 0          // превью-деплой Coolify
-     || location.hostname === 'localhost'               // локальный запуск
-     || location.hostname === '127.0.0.1'
-     || location.hostname.endsWith('.trycloudflare.com') // временный туннель
-     || location.search.indexOf('beta=1') !== -1;       // фича-флаг
-
-  // 2. Оставим след в консоли — чтобы вы сами видели, что происходит
-  if (isTest) {
-    console.log('%c[analytics] тестовая среда — счётчики отключены',
-                'background:#ffb703;padding:2px 6px');
-    return; // выходим, ничего не грузим
-  }
-
-  // 3. Ниже — только боевой режим
-
-  // --- Яндекс.Метрика ---
-     <!-- Metrika начало --------------------------   -->
-<!-- Yandex.Metrika counter -->
-  <script type="text/javascript">    
-  (function(m,e,t,r,i,k,a){         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; 
-  m[i].l=1*new Date();         
-  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a) })
-  (window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=111509613', 'ym');
-  ym(111509613, 'init', {ssr:true, webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script> <noscript>
-  <div>
-    <img src="https://mc.yandex.ru/watch/111509613" style="position:absolute; left:-9999px;" alt="" />
-</div>
-</noscript>
-  <!-- /Yandex.Metrika counter -->
- <!-- Yandex.Metrika informer --><p>
- <a href="https://metrika.yandex.ru/stat/?id=111509613&amp;from=informer" target="_blank" rel="nofollow">  
-  <img src="https://informer.yandex.ru/informer/111509613/3_0_000000FF_000000FF_1_pageviews"          
-  style="width:88px; height:31px; border:0;"          
-  alt="Яндекс.Метрика"          
-  title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"        
-  class="ym-advanced-informer" data-cid="111509613" data-lang="ru"/> </a> 
-  <!-- /Yandex.Metrika informer -->
-  <!-- Metrika конец-------------------------   -->
-  
-  <a href="https://info.flagcounter.com/6HXa">
-  <img src="https://s01.flagcounter.com/count/6HXa/bg_000000/txt_FFFFFF/border_CCCCCC/columns_3/maxflags_9/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a> 
-  
-
-  // --- Google Analytics 4 ---
-  var ga = document.createElement('script');
-  ga.async = true;
-  ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX';
-  document.head.appendChild(ga);
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { dataLayer.push(arguments); };
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX');
-})();
-</script>
-<!-- ===== /Аналитика ===== -->
-
-
+  <!-- ===== Аналитика ===== -->
+  -
+  -
+  тут блок Аналитики
+  -
+  -
+  <!-- ===== /Аналитика ===== -->
 </body>
 </html>
 <!-- КОНЕЦ index.html ТЕСТОВЫЙ -->
