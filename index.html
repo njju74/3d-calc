@@ -110,7 +110,7 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
 <div class="card">
   <h2>Что напечатано за один запуск</h2>
   <label>Название</label>
-  <input id="name" value="Моя 1 3D-модель (партия-30 штук)">
+  <input id="name" value="Моя вторая 3D-модель (партия-30 штук)">
   <div class="row">
     <div><label>Вес филамента, г</label><input id="w" type="number" value="12"></div>
     <div><label>Время печати, мин</label><input id="pm" type="number" value="55"></div>
@@ -597,23 +597,26 @@ calc();
 
   <!-- в конце index.html -->
 <script>
-  // Читаем параметры адресной строки
-  const params = new URLSearchParams(window.location.search);
-  const isBeta = params.get('beta') === '1';
+  (function () {
+    var params = new URLSearchParams(location.search);
 
-  if (isBeta) {
-    // включаем новый блок
-    document.getElementById('new-feature').hidden = false;
-    // и метку, чтобы вы сами не запутались, где находитесь
+    // запоминаем выбор, чтобы не таскать ?beta=1 по всем ссылкам
+    if (params.has('beta')) {
+      localStorage.setItem('beta', params.get('beta'));
+    }
+    var isBeta = localStorage.getItem('beta') === '1';
+
+    if (!isBeta) return;
+
+    var block = document.getElementById('new-feature');
+    if (block) block.hidden = false;
+
     document.body.insertAdjacentHTML('afterbegin',
-      '<div style="background:#ffb703;padding:6px;text-align:center;font:14px sans-serif">' +
-      'ТЕСТОВАЯ ВЕРСИЯ</div>');
-  }
-  if (params.has('beta')) {
-  localStorage.setItem('beta', params.get('beta'));
-}
-const isBeta = localStorage.getItem('beta') === '1';
-</script>
+      '<div style="background:#ffb703;padding:6px;text-align:center;' +
+      'font:14px sans-serif">ТЕСТОВАЯ ВЕРСИЯ · ' +
+      '<a href="?beta=0">выключить</a></div>');
+  })();
+  </script>
 
 
 <div id="new-feature" hidden>
