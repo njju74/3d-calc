@@ -412,14 +412,14 @@ function copyCalc(){
   const d = new Date();
   const auto = 'Расчёт от ' + d.toLocaleDateString('ru-RU') +
                ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
-  Elname.value = auto;
-  Elname.style.transition = 'background .4s';
-  Elname.style.background = '#fff3cd';                 // короткая подсветка
+  nameEl.value = auto;
+  nameEl.style.transition = 'background .4s';
+  nameEl.style.background = '#fff3cd';                 // короткая подсветка
   setTimeout(() => name.style.background = '', 800);
 }
   const c = window._c;
  // let t = `📊 ${c.name}`;
-  let t = `📊 ${Elname}`;
+  let t = `📊 ${nameEl}`;
   if(c.qty > 1) t += ` (партия ${c.qty} шт)`;
   t += `\n\nСЕБЕСТОИМОСТЬ: ${money(c.unit)} / шт`;
   if(c.qty > 1) t += `\nЗа всю партию: ${money(c.total)}`;
