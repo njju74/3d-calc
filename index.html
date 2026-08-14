@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head> 
+<head>  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Иконки -->
@@ -29,6 +29,13 @@
 
   
 <style>
+  
+.shadow-text {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+
+  
 :root{
   --bg:#0f1620; --card:#182333; --line:#2a3a50;
   --txt:#e8eef7; --dim:#8fa3bd; --acc:#ff8a3d; --ok:#4ade80;
@@ -106,28 +113,15 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
 
   <!-- ЛЕВАЯ КОЛОНКА -->
   <div>
- <!-- заменяем этот блок на два других
-    <div class="card">
-      <h2>Изделие</h2>
-      <label>Название</label>
-      <input id="name" value="Крючок настенный">
-      <div class="row">
-  <div><label>Штук в партии</label><input id="qty" type="number" value="1"></div>
-  <div><label>Время на заказ, мин</label><input id="om" type="number" value="15"></div>
-</div>
-      <div class="row">
-        <div><label>Вес детали, г</label><input id="w" type="number" value="18"></div>
-        <div><label>Отход на цвет, г</label><input id="purge" type="number" value="0"></div>
-      </div>
-      <div class="row">
-        <div><label>Печать, мин</label><input id="pm" type="number" value="45"></div>
-        <div><label>Руками, мин</label><input id="hm" type="number" value="7"></div>
-      </div>
--->
 <div class="card">
   <h2>Что напечатано за один запуск</h2>
   <label>Название</label>
-  <input id="name" value="Моя 3D-модель (партия-30 штук)">
+ 
+<!--  <input id="name" value="Моя 3D-модель (партия-30 штук)"> -->
+  < div class="shadow-text">
+    <input id="name" value="Например: Моя 3D-модель (партия 30 штук)">
+    <div>
+ <input id="name"> 
   <div class="row">
     <div><label>Вес филамента, г</label><input id="w" type="number" value="12"></div>
     <div><label>Время печати, мин</label><input id="pm" type="number" value="55"></div>
