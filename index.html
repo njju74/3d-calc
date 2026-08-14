@@ -402,7 +402,13 @@ function calc(){
     box.innerHTML = `<div class="hint">Чтобы получить <b>${g('mm')}% маржи</b>,
       ставь цену <b>${money((c.unit + g('ml'))/k)}</b> за штуку.</div>`;
   }
-if (!title) {
+
+  window._c = {unit: c.unit, total: c.total, qty: qty0, r, items,
+               name: document.getElementById('Name').value};
+}
+
+function copyCalc(){
+ if (!title) {
   const d = new Date();
   const auto = 'Расчёт от ' + d.toLocaleDateString('ru-RU') +
                ' ' + d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'});
@@ -411,12 +417,6 @@ if (!title) {
   nameEl.style.background = '#fff3cd';                 // короткая подсветка
   setTimeout(() => nameEl.style.background = '', 800);
 }
-  window._c = {unit: c.unit, total: c.total, qty: qty0, r, items,
-               name: document.getElementById('calcName').value};
-}
-
-function copyCalc(){
- 
   const c = window._c;
   let t = `📊 ${c.name}`;
   if(c.qty > 1) t += ` (партия ${c.qty} шт)`;
