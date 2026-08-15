@@ -101,9 +101,8 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--txt
 
 /* ===== ПЕЧАТЬ ===== */
 #printarea{display:none}
-
 @media print{
-  body > *{display:none !important}
+  body > *:not(#printarea){display:none !important}
   #printarea{display:block !important}
 
   body{background:#fff !important;color:#000 !important;padding:0;
@@ -645,6 +644,9 @@ calc();
   <a href="https://agent3d.ru/169-2/" target="_blank">Политика конфиденциальности</a> ·
   <a href="https://t.me/masterskaya_calc" target="_blank">Telegram</a>
 </p>
+
+<div id="printarea"></div>
+  
 <!-- /Yandex.Metrika counter -->  
 <!-- Yandex.Metrika informer -->
   <a href="https://metrika.yandex.ru/stat/?id=111509613&amp;from=informer" target="_blank" rel="nofollow"> 
@@ -654,6 +656,5 @@ calc();
   <img src="https://s01.flagcounter.com/count/6HXa/bg_000000/txt_FFFFFF/border_000000/columns_3/maxflags_9/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0"></a> </p>
 <!-- Metrika -------------------------   -->
  
-<div id="printarea"></div>
 </body>
 </html>
